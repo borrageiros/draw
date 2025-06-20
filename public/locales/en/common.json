@@ -1,0 +1,124 @@
+{
+  "header": {
+    "login": "Log in",
+    "register": "Sign up",
+    "logout": "Log out"
+  },
+  "home": {
+    "title": "Draw what you imagine",
+    "description": "A simple and powerful app to express your creativity through digital drawings.",
+    "startFree": "Start for free",
+    "learnMore": "Learn more"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "subtitle": "Access your account to start drawing",
+      "emailOrUsername": "Email or Username",
+      "emailOrUsernamePlaceholder": "you@example.com or your_username",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "rememberMe": "Remember me",
+      "button": "Log in",
+      "buttonLoading": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Sign up to start drawing",
+      "username": "Username",
+      "email": "Email address",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "minChars": "Minimum 6 characters",
+      "button": "Create account",
+      "buttonLoading": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "login": "Log in"
+    },
+    "errors": {
+      "passwordMatch": "Passwords do not match",
+      "passwordLength": "Password must be at least 6 characters long",
+      "registerError": "Error registering user",
+      "loginError": "Error logging in",
+      "unknownError": "An unknown error has occurred"
+    }
+  },
+  "language": {
+    "select": "Select language",
+    "es": "Spanish",
+    "en": "English"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "select": "Select theme"
+  },
+  "dashboard": {
+    "title": "My Drawings",
+    "loading": "Loading dashboard...",
+    "newDrawingButton": "Create New Drawing",
+    "newDrawingPlaceholder": "Enter drawing title...",
+    "noDrawings": "You don't have any drawings yet. Create one!",
+    "myDrawingsTitle": "My Drawings",
+    "sharedDrawingsTitle": "Shared with me",
+    "errors": {
+      "createFailed": "Failed to create new drawing.",
+      "titleRequired": "Title is required."
+    }
+  },
+  "drawingCard": {
+    "lastUpdatedPrefix": "Last updated:",
+    "editTitleAria": "Edit title",
+    "deleteAria": "Delete drawing",
+    "shareAria": "Share drawing",
+    "confirmDelete": {
+      "title": "Confirm Deletion",
+      "message": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone.",
+      "confirmButton": "Delete",
+      "cancelButton": "Cancel"
+    },
+    "errors": {
+      "titleRequired": "Title is required.",
+      "renameFailed": "Failed to rename drawing.",
+      "deleteFailed": "Failed to delete drawing.",
+      "loadUsersFailed": "Failed to load users.",
+      "userNotSelected": "Please select a user to share with.",
+      "shareFailed": "Failed to share drawing.",
+      "unshareFailed": "Failed to unshare drawing."
+    },
+    "shareModal": {
+      "title": "Share Drawing",
+      "searchPlaceholder": "Search user by name or email",
+      "confirmButton": "Share",
+      "cancelButton": "Cancel",
+      "noUsersFound": "No users available to share with or match your search.",
+      "loadingUsers": "Loading users...",
+      "sharingButton": "Sharing...",
+      "shareTab": "Share",
+      "manageSharesTab": "Manage Access",
+      "noSharedUsers": "This drawing is not shared with anyone yet.",
+      "unsharingButton": "Remove access"
+    }
+  },
+  "editor": {
+    "save": "Save Drawing",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "loadingDrawing": "Loading drawing...",
+    "homePage": "Home Page",
+    "unsavedChanges": {
+      "title": "Unsaved Changes",
+      "message": "You have unsaved changes. Do you want to save them before leaving?",
+      "save": "Save",
+      "discard": "Discard",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "cannotSave": "Cannot save drawing. Missing reference or ID.",
+      "saveFailed": "Failed to save drawing.",
+      "loadFailedSimple": "Error loading drawing."
+    }
+  }
+}

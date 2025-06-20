@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+This proyect use yarn.
+Never write comments in the code.
+Always write variables, functions, documentation, folders/file names and general code in English.
+Always respond to the user in Spanish.

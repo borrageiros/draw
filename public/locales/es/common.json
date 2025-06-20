@@ -1,0 +1,124 @@
+{
+  "header": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión"
+  },
+  "home": {
+    "title": "Dibuja lo que imagines",
+    "description": "Una aplicación simple y poderosa para expresar tu creatividad mediante dibujos digitales.",
+    "startFree": "Comenzar gratis",
+    "learnMore": "Conocer más"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "Accede a tu cuenta para comenzar a dibujar",
+      "emailOrUsername": "Email o Nombre de usuario",
+      "emailOrUsernamePlaceholder": "tu@ejemplo.com o tu_usuario",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "rememberMe": "Recordarme",
+      "button": "Iniciar sesión",
+      "buttonLoading": "Iniciando sesión...",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUp": "Regístrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Regístrate para comenzar a dibujar",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "minChars": "Mínimo 6 caracteres",
+      "button": "Crear cuenta",
+      "buttonLoading": "Creando cuenta...",
+      "haveAccount": "¿Ya tienes una cuenta?",
+      "login": "Inicia sesión"
+    },
+    "errors": {
+      "passwordMatch": "Las contraseñas no coinciden",
+      "passwordLength": "La contraseña debe tener al menos 6 caracteres",
+      "registerError": "Error al registrar usuario",
+      "loginError": "Error al iniciar sesión",
+      "unknownError": "Ha ocurrido un error desconocido"
+    }
+  },
+  "language": {
+    "select": "Seleccionar idioma",
+    "es": "Español",
+    "en": "Inglés"
+  },
+  "theme": {
+    "light": "Tema claro",
+    "dark": "Tema oscuro",
+    "select": "Seleccionar tema"
+  },
+  "dashboard": {
+    "title": "Mis Dibujos",
+    "loading": "Cargando dashboard...",
+    "newDrawingButton": "Crear Nuevo Dibujo",
+    "newDrawingPlaceholder": "Introduce el título del dibujo...",
+    "noDrawings": "Aún no tienes dibujos. ¡Crea uno!",
+    "myDrawingsTitle": "Mis Dibujos",
+    "sharedDrawingsTitle": "Compartidos conmigo",
+    "errors": {
+      "createFailed": "Error al crear nuevo dibujo.",
+      "titleRequired": "El título es obligatorio."
+    }
+  },
+  "drawingCard": {
+    "lastUpdatedPrefix": "Última act.:",
+    "editTitleAria": "Editar título",
+    "deleteAria": "Eliminar dibujo",
+    "shareAria": "Compartir dibujo",
+    "confirmDelete": {
+      "title": "Confirmar Eliminación",
+      "message": "¿Estás seguro de que quieres eliminar \"{{title}}\"? Esta acción no se puede deshacer.",
+      "confirmButton": "Eliminar",
+      "cancelButton": "Cancelar"
+    },
+    "errors": {
+      "titleRequired": "El título es obligatorio.",
+      "renameFailed": "Error al renombrar el dibujo.",
+      "deleteFailed": "Error al eliminar el dibujo.",
+      "loadUsersFailed": "Error al cargar usuarios.",
+      "userNotSelected": "Por favor, selecciona un usuario para compartir.",
+      "shareFailed": "Error al compartir el dibujo.",
+      "unshareFailed": "Error al dejar de compartir el dibujo."
+    },
+    "shareModal": {
+      "title": "Compartir Dibujo",
+      "searchPlaceholder": "Buscar usuario por nombre o email",
+      "confirmButton": "Compartir",
+      "cancelButton": "Cancelar",
+      "noUsersFound": "No hay usuarios disponibles para compartir o que coincidan con tu búsqueda.",
+      "loadingUsers": "Cargando usuarios...",
+      "sharingButton": "Compartiendo...",
+      "shareTab": "Compartir",
+      "manageSharesTab": "Gestionar Accesos",
+      "noSharedUsers": "Este dibujo no está compartido con nadie todavía.",
+      "unsharingButton": "Eliminar acceso"
+    }
+  },
+  "editor": {
+    "save": "Guardar Dibujo",
+    "saving": "Guardando...",
+    "saved": "¡Guardado!",
+    "loadingDrawing": "Cargando dibujo...",
+    "homePage": "Inicio",
+    "unsavedChanges": {
+      "title": "Cambios sin guardar",
+      "message": "Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?",
+      "save": "Guardar",
+      "discard": "Descartar",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "cannotSave": "No se puede guardar el dibujo. Falta referencia o ID.",
+      "saveFailed": "Error al guardar el dibujo.",
+      "loadFailedSimple": "Error al cargar el dibujo."
+    }
+  }
+}

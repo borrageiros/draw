@@ -1,0 +1,488 @@
+.cardContainer {
+  background-color: var(--card-bg, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:global(.dark) .cardContainer {
+  --card-bg: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cardContainer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+:global(.dark) .cardContainer:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color, #eaeaea);
+}
+
+:global(.dark) .titleContainer {
+  --border-color: #333;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary, #333);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:global(.dark) .cardTitle {
+  --text-primary: #e0e0e0;
+}
+
+.titleLink {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardContent {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardDate {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666);
+}
+
+:global(.dark) .cardDate {
+  --text-secondary: #aaa;
+}
+
+.cardLinkUnderTitle {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.actionButtonsContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  color: var(--icon-color, #666);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:global(.dark) .iconButton {
+  --icon-color: #aaa;
+}
+
+.iconButton:hover {
+  background-color: var(--icon-hover-bg, rgba(0, 0, 0, 0.05));
+  color: var(--icon-hover-color, #333);
+}
+
+:global(.dark) .iconButton:hover {
+  --icon-hover-bg: rgba(255, 255, 255, 0.1);
+  --icon-hover-color: #fff;
+}
+
+.deleteButton:hover {
+  color: var(--delete-color, #e53935);
+}
+
+:global(.dark) .deleteButton:hover {
+  --delete-color: #f44336;
+}
+
+.inlineEditForm {
+  padding: 0.75rem;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color, #eaeaea);
+}
+
+:global(.dark) .inlineEditForm {
+  --border-color: #333;
+}
+
+.inlineInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--input-border, #ccc);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--input-bg, #fff);
+  color: var(--input-color, #333);
+}
+
+:global(.dark) .inlineInput {
+  --input-border: #555;
+  --input-bg: #2a2a2a;
+  --input-color: #e0e0e0;
+}
+
+.inlineInput:focus {
+  outline: none;
+  border-color: var(--input-focus-border, #0070f3);
+  box-shadow: 0 0 0 2px var(--input-focus-shadow, rgba(0, 112, 243, 0.2));
+}
+
+:global(.dark) .inlineInput:focus {
+  --input-focus-border: #0070f3;
+  --input-focus-shadow: rgba(0, 112, 243, 0.3);
+}
+
+.renameErrorText {
+  color: var(--error-color, #ff4d4f);
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+:global(.dark) .renameErrorText {
+  --error-color: #ff7875;
+}
+
+.modalErrorText {
+  color: var(--error-color, #ff4d4f);
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: var(--error-bg, rgba(255, 77, 79, 0.1));
+  border-radius: 4px;
+  text-align: center;
+}
+
+:global(.dark) .modalErrorText {
+  --error-color: #ff7875;
+  --error-bg: rgba(255, 77, 79, 0.2);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.modalButtonCancel {
+  padding: 0.5rem 1rem;
+  background-color: var(--cancel-btn-bg, #f5f5f5);
+  color: var(--cancel-btn-color, #333);
+  border: 1px solid var(--cancel-btn-border, #d9d9d9);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+:global(.dark) .modalButtonCancel {
+  --cancel-btn-bg: #333;
+  --cancel-btn-color: #e0e0e0;
+  --cancel-btn-border: #444;
+}
+
+.modalButtonCancel:hover {
+  background-color: var(--cancel-btn-hover-bg, #e6e6e6);
+}
+
+:global(.dark) .modalButtonCancel:hover {
+  --cancel-btn-hover-bg: #444;
+}
+
+.modalButtonCancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modalButtonConfirm {
+  padding: 0.5rem 1rem;
+  background-color: var(--confirm-btn-bg, #1890ff);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.modalButtonConfirm.delete {
+  --confirm-btn-bg: #ff4d4f;
+}
+
+.modalButtonConfirm:hover {
+  background-color: var(--confirm-btn-hover-bg, #40a9ff);
+}
+
+.modalButtonConfirm.delete:hover {
+  --confirm-btn-hover-bg: #ff7875;
+}
+
+:global(.dark) .modalButtonConfirm:hover {
+  filter: brightness(1.1);
+}
+
+.modalButtonConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shareModalContent {
+  margin-bottom: 1rem;
+}
+
+.shareSearchInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--input-border, #d9d9d9);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  background-color: var(--input-bg, #fff);
+  color: var(--input-color, #333);
+}
+
+:global(.dark) .shareSearchInput {
+  --input-border: #444;
+  --input-bg: #2a2a2a;
+  --input-color: #e0e0e0;
+}
+
+.shareSearchInput:focus {
+  outline: none;
+  border-color: var(--input-focus-border, #1890ff);
+  box-shadow: 0 0 0 2px var(--input-focus-shadow, rgba(24, 144, 255, 0.2));
+}
+
+:global(.dark) .shareSearchInput:focus {
+  --input-focus-border: #1890ff;
+  --input-focus-shadow: rgba(24, 144, 255, 0.3);
+}
+
+.shareSearchInput:disabled {
+  background-color: var(--input-disabled-bg, #f5f5f5);
+  cursor: not-allowed;
+}
+
+:global(.dark) .shareSearchInput:disabled {
+  --input-disabled-bg: #333;
+}
+
+.userListShare {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--list-border, #d9d9d9);
+  border-radius: 4px;
+}
+
+:global(.dark) .userListShare {
+  --list-border: #444;
+}
+
+.userListItemShare {
+  padding: 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--item-border, #f0f0f0);
+  background-color: var(--item-bg, #fff);
+  color: var(--item-color, #333);
+  transition: background-color 0.2s;
+}
+
+:global(.dark) .userListItemShare {
+  --item-border: #333;
+  --item-bg: #2a2a2a;
+  --item-color: #e0e0e0;
+}
+
+.userListItemShare:last-child {
+  border-bottom: none;
+}
+
+.userListItemShare:hover {
+  background-color: var(--item-hover-bg, #f5f5f5);
+}
+
+:global(.dark) .userListItemShare:hover {
+  --item-hover-bg: #333;
+}
+
+.userListItemShare.selectedUser {
+  background-color: var(--selected-bg, #e6f7ff);
+  color: var(--selected-color, #1890ff);
+}
+
+:global(.dark) .userListItemShare.selectedUser {
+  --selected-bg: rgba(24, 144, 255, 0.2);
+  --selected-color: #1890ff;
+}
+
+.userListItemShare.disabledItem {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.tabsContainer {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--tabs-border, #d9d9d9);
+}
+
+:global(.dark) .tabsContainer {
+  --tabs-border: #444;
+}
+
+.tabButton {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--tab-color, #666);
+  transition: all 0.2s;
+}
+
+:global(.dark) .tabButton {
+  --tab-color: #aaa;
+}
+
+.tabButton:hover {
+  color: var(--tab-hover-color, #1890ff);
+}
+
+:global(.dark) .tabButton:hover {
+  --tab-hover-color: #40a9ff;
+}
+
+.tabButton.activeTab {
+  color: var(--active-tab-color, #1890ff);
+  border-bottom: 2px solid var(--active-tab-border, #1890ff);
+  font-weight: 500;
+}
+
+:global(.dark) .tabButton.activeTab {
+  --active-tab-color: #1890ff;
+  --active-tab-border: #1890ff;
+}
+
+.userListManage {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--list-border, #d9d9d9);
+  border-radius: 4px;
+}
+
+:global(.dark) .userListManage {
+  --list-border: #444;
+}
+
+.userListItemManage {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--item-border, #f0f0f0);
+  background-color: var(--item-bg, #fff);
+  color: var(--item-color, #333);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:global(.dark) .userListItemManage {
+  --item-border: #333;
+  --item-bg: #2a2a2a;
+  --item-color: #e0e0e0;
+}
+
+.userListItemManage:last-child {
+  border-bottom: none;
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.unshareButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  border-radius: 4px;
+  color: var(--unshare-color, #666);
+  transition: all 0.2s;
+}
+
+:global(.dark) .unshareButton {
+  --unshare-color: #aaa;
+}
+
+.unshareButton:hover {
+  background-color: var(--unshare-hover-bg, rgba(255, 77, 79, 0.1));
+  color: var(--unshare-hover-color, #ff4d4f);
+}
+
+:global(.dark) .unshareButton:hover {
+  --unshare-hover-bg: rgba(255, 77, 79, 0.2);
+  --unshare-hover-color: #ff7875;
+}
+
+.unshareButton.disabledButton {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .userListShare, .userListManage {
+    max-height: 150px;
+  }
+  
+  .tabButton {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .userListItemManage {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .tabButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
