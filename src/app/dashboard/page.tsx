@@ -20,8 +20,10 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
 
   const [isCreating, setIsCreating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newDrawingTitle, setNewDrawingTitle] = useState("");
   const newTitleInputRef = useRef<HTMLInputElement>(null);
+  const createFormRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchDrawings = async () => {
@@ -60,7 +62,7 @@ export default function Dashboard() {
     }
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (isCreating && newTitleInputRef.current && !newTitleInputRef.current.contains(event.target as Node)) {
+      if (isCreating && createFormRef.current && !createFormRef.current.contains(event.target as Node)) {
         handleCancelCreate();
       }
     };
@@ -92,6 +94,7 @@ export default function Dashboard() {
       return;
     }
     try {
+      setIsSubmitting(true);
       setError(null);
       const newDrawingData = {
         title: newDrawingTitle.trim(),
@@ -109,6 +112,8 @@ export default function Dashboard() {
       const errorText = i18nIsLoading ? "Failed to create new drawing." : (t('dashboard.errors.createFailed') || "Failed to create new drawing.");
       setError(errorText);
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -195,13 +200,15 @@ export default function Dashboard() {
             </div>
           </div>
           <div className={styles.headerRight}>
-            {!isCreating ? (
+            {isSubmitting ? (
+              <Loader size="small" />
+            ) : !isCreating ? (
               <button onClick={handleStartCreate} className={styles.createButton}>
                 <Icon name="plus" size={20} />
                 {t('dashboard.newDrawingButton') || "Create New Drawing"}
               </button>
             ) : (
-              <div className={styles.inlineCreateForm}>
+              <div ref={createFormRef} className={styles.inlineCreateForm}>
                 <input
                   ref={newTitleInputRef}
                   type="text"
@@ -211,15 +218,15 @@ export default function Dashboard() {
                   placeholder={t('dashboard.newDrawingPlaceholder') || "Enter drawing title..."}
                   className={styles.inlineInput}
                 />
-                <button 
-                  onClick={handleConfirmCreate} 
+                <button
+                  onClick={handleConfirmCreate}
                   className={`${styles.actionButton} ${styles.confirmButton}`}
                   aria-label={t('dashboard.create') || "Create"}
                 >
                   <Icon name="check" size={16} />
                 </button>
-                <button 
-                  onClick={handleCancelCreate} 
+                <button
+                  onClick={handleCancelCreate}
                   className={`${styles.actionButton} ${styles.cancelButton}`}
                   aria-label={t('dashboard.cancel') || "Cancel"}
                 >
@@ -234,46 +241,48 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {error && <p className={styles.errorText}>{error}</p>}
+        <main className={styles.content}>
+          {error && <p className={styles.errorText}>{error}</p>}
 
-        {myDrawings.length === 0 && sharedDrawings.length === 0 && !error && !isCreating && (
-          <p>{t('dashboard.noDrawings') || "You don\'t have any drawings yet. Create one!"}</p>
-        )}
+          {myDrawings.length === 0 && sharedDrawings.length === 0 && !error && !isCreating && (
+            <p>{t('dashboard.noDrawings') || "You don't have any drawings yet. Create one!"}</p>
+          )}
 
-        {myDrawings.length > 0 && (
-          <section className={styles.drawingsSection}>
-            <h2 className={styles.sectionTitle}>{t('dashboard.myDrawingsTitle') || "Mis dibujos"}</h2>
-            <div className={styles.drawingsGrid}>
-              {myDrawings.map((drawing) => (
-                <DrawingCard 
-                  owned={true}
-                  key={drawing._id} 
-                  drawing={drawing} 
-                  onDrawingRenamed={handleDrawingRenamed}
-                  onDrawingDeleted={handleDrawingDeleted}
-                  onDrawingShared={handleDrawingShared}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+          {myDrawings.length > 0 && (
+            <section className={styles.drawingsSection}>
+              <h2 className={styles.sectionTitle}>{t('dashboard.myDrawingsTitle') || "Mis dibujos"}</h2>
+              <div className={styles.drawingsGrid}>
+                {myDrawings.map((drawing) => (
+                  <DrawingCard 
+                    owned={true}
+                    key={drawing._id} 
+                    drawing={drawing} 
+                    onDrawingRenamed={handleDrawingRenamed}
+                    onDrawingDeleted={handleDrawingDeleted}
+                    onDrawingShared={handleDrawingShared}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
 
-        {sharedDrawings.length > 0 && (
-          <section className={styles.drawingsSection}>
-            <h2 className={styles.sectionTitle}>{t('dashboard.sharedDrawingsTitle') || "Compartidos conmigo"}</h2>
-            <div className={styles.drawingsGrid}>
-              {sharedDrawings.map((drawing) => (
-                <DrawingCard 
-                  owned={false}
-                  key={drawing._id} 
-                  drawing={drawing} 
-                  onDrawingRenamed={handleDrawingRenamed}
-                  onDrawingDeleted={handleDrawingDeleted}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+          {sharedDrawings.length > 0 && (
+            <section className={styles.drawingsSection}>
+              <h2 className={styles.sectionTitle}>{t('dashboard.sharedDrawingsTitle') || "Compartidos conmigo"}</h2>
+              <div className={styles.drawingsGrid}>
+                {sharedDrawings.map((drawing) => (
+                  <DrawingCard 
+                    owned={false}
+                    key={drawing._id} 
+                    drawing={drawing} 
+                    onDrawingRenamed={handleDrawingRenamed}
+                    onDrawingDeleted={handleDrawingDeleted}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
       </div>
     </AuthGuard>
   );

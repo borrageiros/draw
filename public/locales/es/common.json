@@ -5,10 +5,9 @@
     "logout": "Cerrar sesión"
   },
   "home": {
-    "title": "Dibuja lo que imagines",
-    "description": "Una aplicación simple y poderosa para expresar tu creatividad mediante dibujos digitales.",
-    "startFree": "Comenzar gratis",
-    "learnMore": "Conocer más"
+    "title": "Organiza y presenta tus ideas visualmente",
+    "description": "Una herramienta colaborativa en tiempo real para crear diagramas, esquemas y presentaciones interactivas. Ideal para planificar proyectos, visualizar estructuras y trabajar en equipo.",
+    "startFree": "Comenzar ahora"
   },
   "auth": {
     "login": {
@@ -57,7 +56,7 @@
   },
   "dashboard": {
     "title": "Mis Dibujos",
-    "loading": "Cargando dashboard...",
+    "loading": "Cargando...",
     "newDrawingButton": "Crear Nuevo Dibujo",
     "newDrawingPlaceholder": "Introduce el título del dibujo...",
     "noDrawings": "Aún no tienes dibujos. ¡Crea uno!",

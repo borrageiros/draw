@@ -59,12 +59,6 @@ export default function Home() {
               >
                 {t('home.startFree')}
               </Link>
-              <Link 
-                href="/about" 
-                className="inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-base font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none"
-              >
-                {t('home.learnMore')}
-              </Link>
             </div>
           </div>
           <div className="lg:w-1/2 flex justify-center">

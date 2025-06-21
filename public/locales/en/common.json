@@ -5,10 +5,9 @@
     "logout": "Log out"
   },
   "home": {
-    "title": "Draw what you imagine",
-    "description": "A simple and powerful app to express your creativity through digital drawings.",
-    "startFree": "Start for free",
-    "learnMore": "Learn more"
+    "title": "Organize and Present Your Ideas Visually",
+    "description": "A real-time collaborative tool for creating diagrams, flowcharts, and interactive presentations. Perfect for project planning, visualizing structures, and teamwork.",
+    "startFree": "Start now"
   },
   "auth": {
     "login": {
@@ -57,7 +56,7 @@
   },
   "dashboard": {
     "title": "My Drawings",
-    "loading": "Loading dashboard...",
+    "loading": "Loading...",
     "newDrawingButton": "Create New Drawing",
     "newDrawingPlaceholder": "Enter drawing title...",
     "noDrawings": "You don't have any drawings yet. Create one!",

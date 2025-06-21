@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n/useI18n';
 import { register } from '@/lib/api';
+import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
+import ThemeSwitcher from '@/components/ThemeSwitcher/ThemeSwitcher';
 
 export default function Register() {
   const router = useRouter();
@@ -70,11 +72,17 @@ export default function Register() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-6">
       <div className="max-w-md w-full mx-auto">
         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
-          <div className="px-8 pt-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-normal text-gray-800 dark:text-white mb-2">{t('auth.register.title')}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t('auth.register.subtitle')}
-            </p>
+          <div className="px-8 pt-8 pb-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
+            <div>
+              <h2 className="text-2xl font-normal text-gray-800 dark:text-white mb-2">{t('auth.register.title')}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {t('auth.register.subtitle')}
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <ThemeSwitcher />
+              <LanguageSwitcher />
+            </div>
           </div>
           
           <div className="px-8 py-6">

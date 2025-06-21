@@ -100,7 +100,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
   }, [isConnected, resolvedParams.id]);
 
   const saveDrawing = useCallback((elements: readonly ExcalidrawElement[], appState: AppState) => {
-    if (!drawingIdRef.current) return;
+    if (!drawingIdRef.current) return Promise.resolve();
 
     const relevantAppState: Partial<AppState> = {
       viewBackgroundColor: appState.viewBackgroundColor,
@@ -118,12 +118,39 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
       drawingData: { elements, appState: relevantAppState, files: {} },
     };
     
-    updateDrawing(drawingIdRef.current, payload).catch(err => {
-      console.error("Autosave failed:", err);
-    });
+    return updateDrawing(drawingIdRef.current, payload);
   }, []);
 
   const throttledSave = useMemo(() => throttle(saveDrawing, 2000), [saveDrawing]);
+
+  const saveOnExit = useCallback(async () => {
+    if (!drawingIdRef.current || !excalidrawRef.current) return;
+
+    const elements = excalidrawRef.current.getSceneElements();
+    const appState = excalidrawRef.current.getAppState();
+
+    const relevantAppState: Partial<AppState> = {
+      viewBackgroundColor: appState.viewBackgroundColor,
+      currentItemFontFamily: appState.currentItemFontFamily,
+      currentItemRoughness: appState.currentItemRoughness,
+      currentItemStrokeColor: appState.currentItemStrokeColor,
+      currentItemStrokeStyle: appState.currentItemStrokeStyle,
+      currentItemStrokeWidth: appState.currentItemStrokeWidth,
+      currentItemTextAlign: appState.currentItemTextAlign,
+      name: appState.name,
+      gridSize: appState.gridSize,
+    };
+
+    const payload: UpdateDrawingRequest = {
+      drawingData: { elements, appState: relevantAppState, files: {} },
+    };
+    
+    try {
+      await updateDrawing(drawingIdRef.current, payload);
+    } catch (err) {
+      console.error("Save on exit failed:", err);
+    }
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -214,9 +241,10 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     setLocale(newLocale);
   }, [locale, setLocale]);
   
-  const handleHomeClick = useCallback(() => {
+  const handleHomeClick = useCallback(async () => {
+    await saveOnExit();
     router.push("/dashboard");
-  }, [router]);
+  }, [router, saveOnExit]);
 
   const getMenuItemText = useCallback((key: string, defaultText?: string) => {
     if (isLoading || !t) {
@@ -275,13 +303,13 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
               <MainMenu.Separator />
               
               <MainMenu.Item onSelect={handleThemeChange}>
-                {theme === 'light' 
+                {theme === 'dark' 
                   ? <><Icon name='moon' /> {getMenuItemText('theme.dark', 'Dark mode')}</> 
                   : <><Icon name='sun' /> {getMenuItemText('theme.light', 'Light mode')}</>}
               </MainMenu.Item>
               
               <MainMenu.Item onSelect={handleLanguageChange}>
-                {locale === 'es'
+                {locale === 'en'
                   ? <><Icon name='flag-en' viewBox="0 0 60 30" /> {getMenuItemText('language.en', 'English')}</> 
                   : <><Icon name='flag-es' viewBox="0 0 300 200" /> {getMenuItemText('language.es', 'Spanish')}</>}
               </MainMenu.Item>
