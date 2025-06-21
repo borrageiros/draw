@@ -7,6 +7,7 @@ import { MainMenu } from "@excalidraw/excalidraw";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import type { AppState, BinaryFiles, ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useRouter } from "next/navigation";
+import { useHandleLibrary } from "@excalidraw/excalidraw";
 
 import { useTheme } from "@/lib/theme-context";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -44,8 +45,11 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
   const [isClient, setIsClient] = useState(false);
   const drawingIdRef = useRef<string | null>(null);
   const excalidrawRef = useRef<ExcalidrawImperativeAPI | null>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const router = useRouter();
   const isUpdatingFromRemote = useRef(false);
+
+  useHandleLibrary({ excalidrawAPI });
 
   const [initialData, setInitialData] = useState<{
     elements: readonly ExcalidrawElement[];
@@ -281,7 +285,10 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
       <div ref={excalidrawWrapperRef} className={`${styles.excalidrawContainer} ${isLoadingDrawing || loadError ? styles.hidden : ''}`}>
         {isClient && initialData && (
           <ExcalidrawComponent
-            excalidrawAPI={(api) => (excalidrawRef.current = api)}
+            excalidrawAPI={(api) => {
+              excalidrawRef.current = api;
+              setExcalidrawAPI(api);
+            }}
             initialData={initialData}
             theme={theme}
             langCode={locale === 'es' ? 'es-ES' : 'en-US'}
