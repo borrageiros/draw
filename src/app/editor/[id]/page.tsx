@@ -5,7 +5,7 @@ import { useRef, useState, useEffect, useCallback, use, useMemo } from "react";
 import "@excalidraw/excalidraw/index.css";
 import { MainMenu } from "@excalidraw/excalidraw";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
-import type { AppState, BinaryFiles, ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
+import type { AppState, BinaryFiles, ExcalidrawImperativeAPI, Collaborator, SocketId } from "@excalidraw/excalidraw/types";
 import { useRouter } from "next/navigation";
 import { useHandleLibrary } from "@excalidraw/excalidraw";
 
@@ -17,6 +17,7 @@ import DynamicAuthGuard from '@/components/AuthGuard/DynamicAuthGuard';
 import { getOneDrawing, updateDrawing, UpdateDrawingRequest } from '@/lib/api';
 import { webSocketService } from '@/lib/websocket';
 import Loader from '@/components/Loader/Loader';
+import { getUser } from "@/components/AuthGuard/AuthGuard";
 
 const ExcalidrawComponent = dynamic(
   () => import("@excalidraw/excalidraw").then((mod) => mod.Excalidraw),
@@ -24,7 +25,19 @@ const ExcalidrawComponent = dynamic(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const throttle = <T extends (...args: any[]) => void>(func: T, delay: number) => {
+const throttle = <T extends (...args: any[]) => void>(func: T, limit: number) => {
+  let inThrottle: boolean;
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const debounce = <T extends (...args: any[]) => void>(func: T, delay: number) => {
   let timeoutId: NodeJS.Timeout | null = null;
   return (...args: Parameters<T>) => {
     if (timeoutId) {
@@ -37,6 +50,7 @@ const throttle = <T extends (...args: any[]) => void>(func: T, delay: number) =>
 };
 
 export default function Editor({ params }: { params: Promise<{ id: string }> }) {
+  const { username } = getUser();
   const resolvedParams = use(params);
   const { t, isLoading } = useI18n();
   const excalidrawWrapperRef = useRef<HTMLDivElement>(null);
@@ -49,6 +63,8 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
   const router = useRouter();
   const isUpdatingFromRemote = useRef(false);
   const [drawingName, setDrawingName] = useState<string | null>(null);
+  const clientId = useMemo(() => Math.random().toString(36).substring(2, 9), []);
+  const [collaborators, setCollaborators] = useState<Map<SocketId, Collaborator>>(new Map());
 
   useHandleLibrary({ excalidrawAPI });
 
@@ -72,12 +88,67 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     const handleMessage = (message: string) => {
       try {
         const data = JSON.parse(message);
-        if (data.type === 'drawingUpdate' && data.drawingId === drawingIdRef.current && excalidrawRef.current) {
-          isUpdatingFromRemote.current = true;
-          excalidrawRef.current.updateScene({
-            elements: data.payload.elements,
-            appState: data.payload.appState,
-          });
+        const { drawingId } = data;
+        if (drawingId !== drawingIdRef.current) return;
+
+        switch (data.type) {
+          case 'drawingUpdate':
+            if (excalidrawRef.current) {
+              isUpdatingFromRemote.current = true;
+              excalidrawRef.current.updateScene({
+                elements: data.payload.elements,
+                appState: data.payload.appState,
+              });
+            }
+            break;
+          case 'pointerUpdate': {
+            if (data.clientId === clientId) return;
+            const { pointer, username } = data;
+            setCollaborators(prev => {
+              const newCollaborators = new Map(prev);
+              const collaboratorId = data.clientId as SocketId;
+              if (pointer) {
+                newCollaborators.set(collaboratorId, { pointer, username });
+              } else {
+                newCollaborators.delete(collaboratorId);
+              }
+              return newCollaborators;
+            });
+            break;
+          }
+          case 'userLeave': {
+            setCollaborators(prev => {
+              const newCollaborators = new Map(prev);
+              newCollaborators.delete(data.clientId as SocketId);
+              return newCollaborators;
+            });
+            break;
+          }
+          case 'userEnter': {
+            const { clientId: newClientId, username } = data;
+            if (newClientId === clientId) return;
+            setCollaborators(prev => {
+              const newCollaborators = new Map(prev);
+              newCollaborators.set(newClientId as SocketId, { username });
+              return newCollaborators;
+            });
+            break;
+          }
+          case 'existingUsers': {
+            const { users } = data;
+            setCollaborators(prev => {
+              const newCollaborators = new Map(prev);
+              users.forEach((u: { clientId: string, username: string }) => {
+                if (u.clientId !== clientId) {
+                  newCollaborators.set(u.clientId as SocketId, { username: u.username });
+                }
+              });
+              return newCollaborators;
+            });
+            break;
+          }
+          default:
+            break;
         }
       } catch (error) {
         console.error("Failed to process WebSocket message", error);
@@ -92,16 +163,16 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
       webSocketService.removeConnectionHandler(handleConnectionChange);
       webSocketService.removeMessageHandler(handleMessage);
     };
-  }, []);
+  }, [clientId]);
 
   // Effect for joining the drawing room once connected and drawingId is available
   useEffect(() => {
     const drawingId = resolvedParams.id;
-    if (isConnected && drawingId) {
+    if (isConnected && drawingId && username) {
       drawingIdRef.current = drawingId;
-      webSocketService.sendMessage(JSON.stringify({ type: 'join', drawingId }));
+      webSocketService.sendMessage(JSON.stringify({ type: 'join', drawingId, clientId, username }));
     }
-  }, [isConnected, resolvedParams.id]);
+  }, [isConnected, resolvedParams.id, clientId, username]);
 
   const saveDrawing = useCallback((elements: readonly ExcalidrawElement[], appState: AppState) => {
     if (!drawingIdRef.current) return Promise.resolve();
@@ -125,7 +196,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     return updateDrawing(drawingIdRef.current, payload);
   }, []);
 
-  const throttledSave = useMemo(() => throttle(saveDrawing, 2000), [saveDrawing]);
+  const throttledSave = useMemo(() => debounce(saveDrawing, 2000), [saveDrawing]);
 
   const saveOnExit = useCallback(async () => {
     if (!drawingIdRef.current || !excalidrawRef.current) return;
@@ -211,6 +282,12 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     fetchDrawing();
   }, [isClient, theme, t, resolvedParams.id]);
 
+  useEffect(() => {
+    if (excalidrawRef.current) {
+      excalidrawRef.current.updateScene({ collaborators });
+    }
+  }, [collaborators]);
+
   const broadcastDrawing = useCallback((elements: readonly ExcalidrawElement[], appState: AppState) => {
     if (webSocketService.isConnected() && drawingIdRef.current) {
       const payload = {
@@ -235,7 +312,25 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     }
   }, []);
   
-  const throttledBroadcast = useMemo(() => throttle(broadcastDrawing, 200), [broadcastDrawing]);
+  const throttledBroadcast = useMemo(() => debounce(broadcastDrawing, 200), [broadcastDrawing]);
+
+  const onPointerUpdate = useCallback((payload: {
+    pointer: { x: number; y: number };
+    button: "down" | "up";
+    pointersMap: Map<number, Readonly<{ x: number; y: number }>>;
+  }) => {
+    if (webSocketService.isConnected() && drawingIdRef.current) {
+      webSocketService.sendMessage(JSON.stringify({
+        type: 'pointerUpdate',
+        drawingId: drawingIdRef.current,
+        clientId: clientId,
+        pointer: payload.pointer,
+        button: payload.button,
+      }));
+    }
+  }, [clientId]);
+
+  const throttledOnPointerUpdate = useMemo(() => throttle(onPointerUpdate, 20), [onPointerUpdate]);
 
   const handleThemeChange = useCallback(() => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -294,6 +389,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
             theme={theme}
             langCode={locale === 'es' ? 'es-ES' : 'en-US'}
             onChange={onExcalidrawChange}
+            onPointerUpdate={throttledOnPointerUpdate}
             renderTopRightUI={() => (
               <button 
                 className={styles.homeButton}

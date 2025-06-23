@@ -10,6 +10,8 @@ interface AuthGuardProps {
 
 interface DecodedToken {
   exp: number;
+  username: string;
+  userId: string;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
@@ -46,6 +48,13 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   }
 
   return <>{children}</>;
+};
+
+export const getUser = () => {
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode<DecodedToken>(token || '');
+  const username = decodedToken.username;
+  return { username };
 };
 
 export default AuthGuard;

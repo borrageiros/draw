@@ -46,8 +46,6 @@ app.prepare().then(() => {
   });
 
   wss.on('connection', (ws) => {
-    console.log('Client connected via integrated server');
-
     ws.on('message', (message) => {
       try {
         const parsedMessage = JSON.parse(message.toString());
@@ -57,11 +55,41 @@ app.prepare().then(() => {
           if (!drawingId) return;
 
           ws.drawingId = drawingId;
+          if (parsedMessage.clientId) {
+            ws.clientId = parsedMessage.clientId;
+          }
+          if(parsedMessage.username) {
+            ws.username = parsedMessage.username;
+          }
+
           if (!rooms.has(drawingId)) {
             rooms.set(drawingId, new Set());
           }
-          rooms.get(drawingId)?.add(ws);
-          console.log(`Client joined room: ${drawingId}`);
+          const room = rooms.get(drawingId);
+          
+          if(room) {
+            const userEnterMessage = JSON.stringify({
+              type: 'userEnter',
+              drawingId,
+              clientId: ws.clientId,
+              username: ws.username,
+            });
+            room.forEach(client => {
+              if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(userEnterMessage);
+              }
+            });
+            
+            const existingUsers = [];
+            room.forEach(client => {
+              if (client !== ws && client.clientId) {
+                existingUsers.push({ clientId: client.clientId, username: client.username });
+              }
+            });
+            ws.send(JSON.stringify({ type: 'existingUsers', drawingId, users: existingUsers }));
+          }
+
+          room?.add(ws);
 
         } else if (type === 'drawingUpdate' && ws.drawingId) {
           const room = rooms.get(ws.drawingId);
@@ -72,6 +100,17 @@ app.prepare().then(() => {
               }
             });
           }
+        } else if (type === 'pointerUpdate' && ws.drawingId) {
+          const room = rooms.get(ws.drawingId);
+          if(room) {
+            const messageWithUsername = { ...parsedMessage, username: ws.username };
+            const finalMessage = JSON.stringify(messageWithUsername);
+            room.forEach(client => {
+              if(client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(finalMessage);
+              }
+            });
+          }
         }
       } catch (error) {
         console.error('Failed to parse message or invalid message format:', error);
@@ -79,14 +118,24 @@ app.prepare().then(() => {
     });
 
     ws.on('close', () => {
-      console.log('Client disconnected from integrated server');
       if (ws.drawingId) {
         const room = rooms.get(ws.drawingId);
         if (room) {
           room.delete(ws);
+          if (ws.clientId) {
+            const leaveMessage = JSON.stringify({
+              type: 'userLeave',
+              drawingId: ws.drawingId,
+              clientId: ws.clientId,
+            });
+            room.forEach(client => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(leaveMessage);
+              }
+            });
+          }
           if (room.size === 0) {
             rooms.delete(ws.drawingId);
-            console.log(`Room ${ws.drawingId} is now empty and has been removed.`);
           }
         }
       }
@@ -99,6 +148,5 @@ app.prepare().then(() => {
 
   server.listen(port, (err) => {
     if (err) throw err;
-    console.log(`> Ready on http://${hostname}:${port}`);
   });
 }); 

@@ -27,9 +27,13 @@ export async function register(data: {
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     return {
       token,
@@ -72,7 +76,11 @@ export async function loginUser(data: {
       tokenOptions = { expiresIn: "7d" };
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, tokenOptions);
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      JWT_SECRET,
+      tokenOptions
+    );
 
     return {
       token,
