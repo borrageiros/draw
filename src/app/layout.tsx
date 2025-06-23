@@ -1,10 +1,6 @@
-'use client';
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/lib/i18n/language-context";
-import { ThemeProvider } from "@/lib/theme-context";
-import { useEffect, useState } from "react";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,26 +17,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [language, setLanguage] = useState<string>('es');
-
-  useEffect(() => {
-    const storedLanguage = localStorage.getItem('locale');
-    if (storedLanguage) {
-      setLanguage(storedLanguage);
-    } else {
-      const browserLang = navigator.language.split('-')[0];
-      setLanguage(['es', 'en'].includes(browserLang) ? browserLang : 'en');
-    }
-  }, []);
-
   return (
-    <html lang={language}>
+    <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

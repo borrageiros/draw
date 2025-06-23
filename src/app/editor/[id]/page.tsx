@@ -48,6 +48,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const router = useRouter();
   const isUpdatingFromRemote = useRef(false);
+  const [drawingName, setDrawingName] = useState<string | null>(null);
 
   useHandleLibrary({ excalidrawAPI });
 
@@ -98,7 +99,6 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
     const drawingId = resolvedParams.id;
     if (isConnected && drawingId) {
       drawingIdRef.current = drawingId;
-      console.log(`Joining room for drawing: ${drawingId}`);
       webSocketService.sendMessage(JSON.stringify({ type: 'join', drawingId }));
     }
   }, [isConnected, resolvedParams.id]);
@@ -173,6 +173,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
       setLoadError(null);
       try {
         const response = await getOneDrawing(drawingIdRef.current);
+        setDrawingName(response.data?.title || null);
         if (response.data && response.data.data) {
           const drawingContent = response.data.data as { elements: ExcalidrawElement[], appState: Partial<AppState>, files: BinaryFiles };
           if (drawingContent && Array.isArray(drawingContent.elements)) {
@@ -281,7 +282,7 @@ export default function Editor({ params }: { params: Promise<{ id: string }> }) 
         </div>
       )}
       {loadError && <div className={styles.errorOverlay}><p>{loadError}</p></div>}
-
+      <title>{`Editor - ${drawingName || 'Drawing'}`}</title>
       <div ref={excalidrawWrapperRef} className={`${styles.excalidrawContainer} ${isLoadingDrawing || loadError ? styles.hidden : ''}`}>
         {isClient && initialData && (
           <ExcalidrawComponent
